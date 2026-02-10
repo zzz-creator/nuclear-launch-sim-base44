@@ -16,6 +16,40 @@ import {
 import { dataProvider as base44 } from '@/components/data/DataProvider';
 {/* @ts-ignore */}
 import { AnimatePresence } from 'framer-motion';
+
+// Generate a cryptographically secure RUN ID in the form "RUN-" + 8 uppercase alphanumeric characters
+function generateSecureRunId() {
+  const alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const length = 8;
+  let bytes;
+
+  if (typeof window !== 'undefined' && window.crypto && window.crypto.getRandomValues) {
+    bytes = new Uint8Array(length);
+    window.crypto.getRandomValues(bytes);
+  } else if (typeof self !== 'undefined' && self.crypto && self.crypto.getRandomValues) {
+    bytes = new Uint8Array(length);
+    self.crypto.getRandomValues(bytes);
+  } else {
+    // Fallback for non-browser environments (e.g., SSR/tests)
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      const nodeCrypto = require('crypto');
+      bytes = Uint8Array.from(nodeCrypto.randomBytes(length));
+    } catch (e) {
+      // Last resort fallback; still better than Math.random() being scattered around
+      bytes = new Uint8Array(length);
+      for (let i = 0; i < length; i++) {
+        bytes[i] = Math.floor(Math.random() * 256);
+      }
+    }
+  }
+
+  let id = '';
+  for (let i = 0; i < length; i++) {
+    id += alphabet[bytes[i] % alphabet.length];
+  }
+  return 'RUN-' + id;
+}
 import AdminAuthentication from '../components/admin/AdminAuthentication';
 import UserManagement from '../components/admin/UserManagement';
 import AuditLogViewer from '../components/admin/AuditLogViewer';
@@ -143,9 +177,7 @@ export default function Simulator({ onClose = () => {}, onHealthOverride = () =>
   const [systemLocked, setSystemLocked] = useState(false);
   const [softHold, setSoftHold] = useState(false);
   const [delayMultiplier, setDelayMultiplier] = useState(1.0);
-  const [runId, setRunId] = useState(() => 
-    'RUN-' + Math.random().toString(36).substring(2, 10).toUpperCase()
-  );
+  const [runId, setRunId] = useState(() => generateSecureRunId());
   // Admin Auth State
   const [adminEmail, setAdminEmail] = useState('admin@centcom.com');
   const [adminPasswordInput, setAdminPasswordInput] = useState('');
@@ -627,7 +659,7 @@ export default function Simulator({ onClose = () => {}, onHealthOverride = () =>
       clearInterval(countdownRef.current);
     }
     
-    const newRunId = 'RUN-' + Math.random().toString(36).substring(2, 10).toUpperCase();
+    const newRunId = generateSecureRunId();
     setRunId(newRunId);
     
     setSystemState(STATES.OFFLINE);
