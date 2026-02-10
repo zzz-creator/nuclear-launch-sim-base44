@@ -60,7 +60,11 @@
         "role": "admin"
       }
     },
-    "update": {},
-    "delete": {}
+    "update": {
+      "data.action": "nonexistent_action"
+    },
+    "delete": {
+      "data.action": "nonexistent_action"
+    }
   }
 }
