@@ -31,12 +31,12 @@ Local setup
 
 3. Create an `.env.local` file in the server root at `/server`:
 
-	`DB_USER= \n
-    DB_PASSWORD= \n
-    DB_SERVER= \n
-    DB_DATABASE= \n
-    PORT=3001 #Keep this the same \n
-    GEMINI_API_KEY=`
+	`DB_USER= `
+    `DB_PASSWORD= `
+    `DB_SERVER= `
+    `DB_DATABASE= `
+    `PORT=3001 #Keep this the same `
+    `GEMINI_API_KEY=`
 
 
 4. Start the app for development:
