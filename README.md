@@ -1,39 +1,59 @@
-**Welcome to your Base44 project** 
+**Nuclear Launch Simulator**
 
-**About**
+About
 
-View and Edit  your app on [Base44.com](http://Base44.com) 
+This repository contains the web app (front-end + lightweight server) used for running and developing the Nuclear Launch Simulator experience. 4.
 
-This project contains everything you need to run your app locally.
+Key features
 
-**Edit the code in your local development environment**
+- **Simulator UI**: interactive simulator pages and mission playback (see `src/components/simulator`).
+- **Admin tools**: scenario editor, audit log viewer, user management, analytics (see `src/components/admin`).
+- **Server & API**: simple Node/Express server and routes for auth, comms, and simulator endpoints (see `server/`).
+- **Data & SQL**: sample SQL schema and stored procedures for SAS codes and repository logic (see `src/components/data`).
+- **Modular UI library**: reusable components and primitives under `src/components/ui`.
 
-Any change pushed to the repo will also be reflected in the Base44 Builder.
+Prerequisites
 
-**Prerequisites:** 
+1. Node.js (v18+ recommended) and npm installed
+2. Git
 
-1. Clone the repository using the project's Git URL 
-2. Navigate to the project directory
-3. Install dependencies: `npm install`
-4. Create an `.env.local` file and set the right environment variables
+Local setup
 
-```
-VITE_BASE44_APP_ID=your_app_id
-VITE_BASE44_APP_BASE_URL=your_backend_url
+1. Clone the repository and enter it:
 
-e.g.
-VITE_BASE44_APP_ID=cbef744a8545c389ef439ea6
-VITE_BASE44_APP_BASE_URL=https://my-to-do-list-81bfaad7.base44.app
-```
+	`git clone <repo-url>`
+	`cd nuclear-launch-sim-base44`
 
-Run the app: `npm run dev`
+2. Install dependencies:
 
-**Publish your changes**
+	`npm install`
+    `cd server & npm install`
 
-Open [Base44.com](http://Base44.com) and click on Publish.
+3. Create an `.env.local` file in the server root at `/server`:
 
-**Docs & Support**
+	DB_USER=
+    DB_PASSWORD=
+    DB_SERVER=
+    DB_DATABASE=
+    PORT=3001 #Keep this the same
+    GEMINI_API_KEY=
 
-Documentation: [https://docs.base44.com/Integrations/Using-GitHub](https://docs.base44.com/Integrations/Using-GitHub)
 
-Support: [https://app.base44.com/support](https://app.base44.com/support)
+4. Start the app for development:
+
+	`npm run dev`
+
+
+Useful files & locations
+
+- Front-end entry: `src/main.jsx`
+- App shell: `src/App.jsx`
+- Simulator pages: `src/components/simulator`
+- Admin tools: `src/components/admin`
+- Server code: `server/index.js`, `server/routes`
+- SQL/data schema: `src/components/data/SASCodePuzzler.sql`, `src/components/data/SQLServerSchema.sql`
+
+Troubleshooting
+
+- If the dev server fails, confirm Node version and re-run step 2.
+- Ensure `.env.local` variables are set and not conflicting with system env.
