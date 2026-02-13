@@ -15,6 +15,7 @@ const apiRoutes = require('./routes/api');
 const commsRoutes = require('./routes/comms');
 const authRoutes = require('./routes/auth');
 const sasRoutes = require('./routes/sas');
+const { createRateLimiter } = require('./middleware/rateLimit');
 
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '.env') });
@@ -26,6 +27,18 @@ const PORT = process.env.PORT || 3001;
 app.use(cors({ origin: '*' }));
 app.use(express.json());
 
+const apiRateLimiter = createRateLimiter({
+    windowMs: Number(process.env.API_RATE_LIMIT_WINDOW_MS || 60_000),
+    maxRequests: Number(process.env.API_RATE_LIMIT_MAX_REQUESTS || 120),
+    keyPrefix: 'api'
+});
+
+const authRateLimiter = createRateLimiter({
+    windowMs: Number(process.env.AUTH_RATE_LIMIT_WINDOW_MS || 60_000),
+    maxRequests: Number(process.env.AUTH_RATE_LIMIT_MAX_REQUESTS || 20),
+    keyPrefix: 'auth'
+});
+
 // Request logging
 app.use((req, res, next) => {
     console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
@@ -33,9 +46,9 @@ app.use((req, res, next) => {
 });
 
 // Routes
-app.use('/api', apiRoutes);
+app.use('/api/auth', authRateLimiter, authRoutes);
+app.use('/api', apiRateLimiter, apiRoutes);
 app.use('/api/comms', commsRoutes);
-app.use('/api/auth', authRoutes);
 app.use('/api/sas', sasRoutes);
 
 // Health Check
